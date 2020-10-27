@@ -1,4 +1,4 @@
-import {Observe} from './observer/index'
+import {observe} from './observer/index'
 export function initState(vm){
     const opts = vm.$options
     console.log(opts)
@@ -34,7 +34,7 @@ function initData(vm){
     console.log(data)
     // 对象劫持 用户改变了数据 MVVM模式数据改变可以额驱动试图改变
     // Object.defineProperty()
-    Observe(data)
+    observe(data)
 }
 function initComputed(vm){
 

@@ -13,11 +13,16 @@
             data() {
                 return {
                     name:'chenming',
-                    age:22
+                    age:22,
+                    data: {
+                        name: 'zx',
+                        hobby:'like'
+                    }
                 }
             },
             methods:{}  
         })
+        vm._data.data ={a:'aa'}
         console.log(vm._data)
     </script>
 </body>

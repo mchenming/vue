@@ -4,10 +4,50 @@
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Vue = factory());
 }(this, (function () { 'use strict';
 
+    function isObject(data) {
+      return typeof data === 'object' && typeof data !== null;
+    }
+
     // 把data中的数据都使用Object.defineProperty重新定义es5
-    // Object.defineProperty 不能兼容ie8及以下vue2无法兼容ie8版本
-    function Observe(data) {
-      console.log(data, 'observe');
+
+    class Observe {
+      constructor(data) {
+        this.walk(data);
+      }
+
+      walk(data) {
+        Object.keys(data).forEach(item => {
+          defineReactive(data, item, data[item]);
+        });
+      }
+
+    }
+
+    function defineReactive(data, key, value) {
+      observe(value); // 递归实现深度检测
+
+      Object.defineProperty(data, key, {
+        get() {
+          // console.log('获取值')
+          return value;
+        },
+
+        set(newval) {
+          if (newval === value) return;
+          console.log('设置值');
+          observe(newval); // 继续劫持用户设置的值 因为用户可能设置的值是一个对象
+
+          value = newval;
+        }
+
+      });
+    }
+
+    function observe(data) {
+      // console.log(data,'observe')
+      let isObj = isObject(data);
+      if (!isObj) return;
+      return new Observe(data);
     }
 
     function initState(vm) {
@@ -34,7 +74,7 @@
       console.log(data); // 对象劫持 用户改变了数据 MVVM模式数据改变可以额驱动试图改变
       // Object.defineProperty()
 
-      Observe(data);
+      observe(data);
     }
 
     function initMixin(Vue) {
